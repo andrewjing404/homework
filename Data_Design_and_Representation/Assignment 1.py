@@ -14,6 +14,7 @@ os.chdir("/Users/xiongma/Documents/Sync/PYJY")
 
 
 #Part 1.1
+# identify non-standard birthday format and convert it to US format
 mock1 = open("mock_data.csv").read()
 
 pattern = re.compile(r"([0-9]{2})\.([0-9]{2})\.([0-9]{4})") # identify non-standard birthday format and convert it to US format
@@ -22,6 +23,7 @@ print(re.sub(pattern, r"\2/\1/\3",mock1))
 
 
 #Part 1.2
+# select only the emails from the text
 mock2 = open("mock_data.csv").read()
 
 pattern2 = re.compile(r"..*\",(.+@.+?),.*") # select only the emails from the text
@@ -32,6 +34,7 @@ print(re.sub(pattern22, "\1", mock2))
 
 
 #Part 1.3
+# concat name with birthday, seperate by tab
 mock3 = open("mock_data.csv").read()
 
 pattern3 = re.compile(r"([0-9]{2})\.([0-9]{2})\.([0-9]{4})")
@@ -52,6 +55,7 @@ for item in mock333:
 print(text)
 
 #Part 1.4
+# split the lat-lon into two columns
 mock4 = open("mock_data.csv").read()
 
 pattern4 = re.compile(r'\"([-.0-9]*?), ([-.0-9]*?)\"') # split the lat-lon into two columns
