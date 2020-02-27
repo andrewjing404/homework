@@ -54,9 +54,25 @@ for item in result:
 
 # create a MapReduction function to calculate weighted_avg_scores
 collection = db['review']
-map = Code("function () {emit(this.asin, this.overall * (this.helpful[0] + 1))}")
-reduce = Code("function (asin, weighted_score) {return Array.avg(weighted_score)}")
-cursor = collection.map_reduce(map, reduce, "weighted_avg_scores")
+map = Code("""function () {var key = this.asin;
+                           var value = {weight: this.helpful[0] + 1,
+                                        scores: this.overall};
+                           emit(key, value);}""")
+
+reduce = Code("""function (key, value) {reducedValue = {weight: 0, scores: 0, product: 0, totalWeight:0, weightedAvg: 0};
+                                        for (var idx = 0; idx < value.length; idx++) {reducedValue.totalWeight += value[idx].weight;
+                                                                                      reducedValue.scores += value[idx].scores;
+                                                                                      reducedValue.product += (value[idx].weight) * value[idx].scores;
+                                                                                     };
+                                       return reducedValue;
+                                        }""")
+
+finalize = Code("""function (key, reducedValue) {if (isNaN(reducedValue.product/reducedValue.totalWeight)) {return reducedValue.scores;}
+                                                 reducedValue.weightedAvg = reducedValue.product/reducedValue.totalWeight;
+                                                 return reducedValue.weightedAvg;
+                                                }""")
+
+cursor = collection.map_reduce(map, reduce, "weighted_avg_scores", finalize=finalize)
 
 # create a collection called "weighted_avg_scores" and store the result of MapREduction to it
 collection = db['weighted_avg_scores']
