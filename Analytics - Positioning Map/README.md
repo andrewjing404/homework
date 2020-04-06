@@ -9,4 +9,4 @@ Draw a positioning map of brands/products. The brands/products can have multiple
 
 ### Sample of Output
 
-![](https://github.com/andrewjing404/homework/blob/master/Advanced%20Statistics%20-%20Positioning%20Map/Result%20-%20Positioning%20Map.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/Analytics%20-%20Positioning%20Map/Result%20-%20Positioning%20Map.png?raw=true)
