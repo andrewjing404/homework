@@ -1,0 +1,357 @@
+```{r}
+library(dplyr)
+library(PASWR)
+library(tidyr)
+library(nortest)
+library(car)
+library(stringr)
+library(PMCMR)
+library(PMCMRplus)
+```
+
+```{r}
+#Q2
+#For the F-test
+q2 <- read.csv("Question2.csv")
+
+t.test(q2$Minutes, alternative = "less", mu = 32)
+
+#beta
+crit <- qnorm(0.05, mean = 32, sd = 8/sqrt(110), lower.tail = TRUE)
+
+pnorm(crit, mean = 30, sd = 8/sqrt(110), lower.tail = FALSE)
+```
+
+
+```{r}
+#Q3
+d9Store <- 153.6
+d10Store <- 151.5
+d11Store <- 133.25
+
+xbarbar <- mean(c(d9Store, d10Store, d11Store))
+
+SST <- 20*((d9Store-xbarbar)^2 + (d10Store-xbarbar)^2 + (d11Store-xbarbar)^2)
+MST <- SST/2
+
+SSE <- (20-1)*(25.57^2+30.39^2+25.03^2)
+MSE <- SSE/(60-3)
+
+#F stat
+(Fstat <- MST/MSE)
+
+#F crit
+(qf(0.95, df1 = 2, df2 = 57))
+
+#Tukey
+ng <- 20
+q <- qtukey(0.05, nmeans=3, df=57)
+
+(omega <- q*sqrt(MSE/ng))
+
+#$9 store vs. $10 store
+(d9Store -d10Store)
+
+#$9 store vs. $11 store
+(d9Store - d11Store)
+
+#$10 store vs. $11 store
+(d10Store - d11Store)
+```
+```{r}
+#Q4
+q4 <- read.csv("Question4.csv")
+
+C1Age <- q4$Age[q4$Cereal == 1]
+C2Age <- q4$Age[q4$Cereal == 2]
+C3Age <- q4$Age[q4$Cereal == 3]
+C4Age <- q4$Age[q4$Cereal == 4]
+C <- list(C1Age, C2Age, C3Age, C4Age)
+
+sapply(X=C, FUN=shapiro.test)
+
+
+q4$Cereal <- factor(q4$Cereal)
+
+aovAge <- aov(q4$Age ~ q4$Cereal)
+summary(aovAge)
+
+hist(C1Age)
+```
+```{r}
+C1Inc <- q4$Income[q4$Cereal == 1]
+C2Inc <- q4$Income[q4$Cereal == 2]
+C3Inc <- q4$Income[q4$Cereal == 3]
+C4Inc <- q4$Income[q4$Cereal == 4]
+C <- list(C1Inc, C2Inc, C3Inc, C4Inc)
+
+sapply(X=C, FUN=shapiro.test)
+
+
+aovInc <- aov(q4$Income ~ q4$Cereal)
+TukeyHSD(aovInc)
+```
+
+```{r}
+C1Ed <- q4$Education[q4$Cereal == 1]
+C2Ed <- q4$Education[q4$Cereal == 2]
+C3Ed <- q4$Education[q4$Cereal == 3]
+C4Ed <- q4$Education[q4$Cereal == 4]
+C <- list(C1Ed, C2Ed, C3Ed, C4Ed)
+
+sapply(X=C, FUN=shapiro.test)
+
+aovEd <- aov(q4$Education ~ q4$Cereal)
+summary(aovEd)
+```
+
+
+```{r}
+plot(TukeyHSD(aovAge))
+plot(TukeyHSD(aovInc))
+```
+
+
+```{r}
+#Q5
+
+#construct sample data
+q5Data <- c(
+        5,4,6,7,9,2,7,12,11,8,6,8,9,16,15,8,10,2,7,14
+)
+
+q5 <- matrix(q5Data, nrow = 5, ncol = 4)
+
+q5<- cbind(q5, c("Group1", "Group2", "Group3", "Group4", "Group5"))
+
+colnames(q5) <- c("Diet1", "Diet2", "Diet3", "Diet4", "Age")
+
+q5 <- as.data.frame(q5)
+
+q5 <- gather(q5, key = "Diet", value = "Weight_Loss", -Age)
+
+q5$Weight_Loss <- as.numeric(q5$Weight_Loss)
+
+#ANOVA
+q5Model <- aov(q5$Weight_Loss ~ q5$Age + q5$Diet)
+q5Resids <- residuals(q5Model)
+
+shapiro.test(q5Resids)
+leveneTest(q5$Weight_Loss ~ q5$Diet)
+
+summary(q5Model)
+```
+
+```{r}
+#Q6
+
+#data preparation
+q6 <- read.csv("Question6.csv")
+q6 <- gather(q6, key = "Degree", value = "value", -Group)
+q6$Group <- factor(q6$Group)
+q6$Degree <- factor(q6$Degree)
+
+#obtain model
+aovDegree <- aov(q6$value ~ q6$Degree + q6$Group)
+degreeModel <- lm(q6$value ~ q6$Degree + q6$Group)
+degreeResiduals <- residuals(degreeModel)
+degreePreds <- predict(degreeModel)
+
+#normality test
+ad.test(degreeResiduals)
+shapiro.test(degreeResiduals)
+
+#equal variances test
+leveneTest(q6$value ~ q6$Group)
+leveneTest(q6$value ~ q6$Degree)
+
+#output
+summary(aovDegree)
+
+#get the model
+aovAlt <- aov(q6$value ~ q6$Degree)
+altModel <- lm(q6$value ~ q6$Degree)
+
+#normality of residuals
+altResiduals <- residuals(altModel)
+shapiro.test(altResiduals)
+ad.test(altResiduals)
+
+#result
+summary(aovAlt)
+```
+
+```{r}
+#Q7
+
+#preprocessing the data
+library(stringr)
+q7 <- read.csv("Question7.csv")
+
+q7$X[1:20] <- "Males"
+q7$X[21:40] <- "Females"
+q7 <- gather(q7, Age, Mileage, -X)
+
+q7$Mileage <- gsub(",", "", q7$Mileage)
+q7$Mileage <- as.numeric(q7$Mileage)
+q7$Age <- factor(q7$Age)
+
+names(q7)[1] <- paste("Gender")
+
+#RBD model
+rbdModel <- aov(q7$Mileage ~ q7$Gender + q7$Age)
+rbdResids <- residuals(rbdModel)
+
+#normality test
+ad.test(rbdResids)
+shapiro.test(rbdResids)
+
+#homogeneity of variances
+leveneTest(q7$Mileage ~ q7$Gender)
+leveneTest(q7$Mileage ~ q7$Age)
+
+#output
+summary(rbdModel)
+TukeyHSD(rbdModel)
+
+#two-factor ANOVA with interaction
+rbdAltModel <- aov(q7$Mileage ~ q7$Gender + q7$Age + q7$Gender*q7$Age)
+
+#output
+summary(rbdAltModel)
+interaction.plot(q7$Gender, q7$Age, q7$Mileage)
+```
+```{r}
+#Q8
+obs <- c(0, 20, 83, 52)
+exp <- c(0.105, 0.219, 0.533, 0.143)
+
+chisq.test(x = obs, p = exp)
+```
+
+```{r}
+#Q9
+up <- c(53, 55, 58, 59, 58)
+down <- c(42, 49, 46, 43, 41)
+stock <- rbind(up, down)
+
+chisq.test(stock)
+```
+```{r}
+#Q10
+q10 <- read.csv("Question10.csv")
+q10$ASSET <- as.character(q10$ASSET)
+q10$ASSET <- as.numeric(gsub(",", "", q10$ASSET))
+q10$EDCL <- factor(q10$EDCL)
+
+#Kruskal-Wallis
+library(PMCMRplus)
+kruskalTest(q10$ASSET ~ q10$EDCL)
+posthoc.kruskal.dunn.test(x=q10$ASSET, g=q10$EDCL, p.adjust.method = "bonferroni")
+
+#Wilcox Rank Sum
+wilcox.test(x=q10$ASSET[q10$EDCL==4], y=q10$ASSET[q10$EDCL==3], alternative = "greater")
+```
+
+```{r}
+#Q11
+q11 <- read.csv("Question11.csv")
+
+shapiro.test(q11$Main)
+
+q11 <- gather(q11, key = "Campus", value = "Wait_Time")
+kruskalTest(q11, q11$Wait_Time ~ q11$Campus)
+
+```
+
+```{r}
+#Q12
+q12 <- read.csv("Question12.csv")
+q12 <- gather(q12, key = "Drink", value = "Rating", -Person)
+
+friedmanTest(q12$Rating, groups = q12$Drink, blocks = q12$Person)
+```
+
+```{r}
+#Q13
+q13 <- read.csv("Question13.csv")
+q13 <- gather(q13, key = "Fund", value = "Return", -Year)
+
+q13$Year <- factor(q13$Year)
+q13$Fund <- factor(q13$Fund)
+
+anova <- aov(q13$Return ~ q13$Year + q13$Fund)
+shapiro.test(residuals(anova))
+summary(anova)
+```
+
+```{r}
+#Q14
+#data preparation
+library(PMCMRplus)
+q14 <- read.csv("Question14.csv")
+
+q14 <- q14[c(4,5)]
+q14 <- na.omit(q14)
+q14$JOBLOSE <- factor(q14$JOBLOSE, levels = c(4, 3, 2, 1))
+
+#Kruskal-Wallis
+kruskalTest(q14$HRS1 ~ q14$JOBLOSE)
+
+#Posthoc Pairwise comparison
+pairwise.wilcox.test(q14$HRS1, q14$JOBLOSE, p.adjust = "bonferroni")
+
+#Wilcoxon Rank Sum
+wilcox.test(x=q14$HRS1[q14$JOBLOSE == 4], y= q14$HRS1[q14$JOBLOSE == 3], alternative = "greater")
+```
+
+```{r}
+#Q15
+q15 <- read.csv("Question15.csv")
+
+#Create a column for blocks
+Taster <- 1:nrow(q15)
+q15 <- cbind(q15, Taster)
+q15 <- gather(q15, key = "Brand", value = "Rating", -Taster)
+
+#Convert to factors
+q15$Taster <- factor(q15$Taster)
+q15$Brand <- factor(q15$Brand)
+q15$Rating <- factor(q15$Rating, ordered = c(1, 2, 3, 4, 5))
+
+#test
+friedman.test(y=q15$Rating, groups = q15$Brand, blocks = q15$Taster)
+```
+```{r}
+#Q16
+#data preparation
+q16 <- read.csv("Question16.csv")
+q16 <- gather(q16, key = "Store", value = "Price", -Title)
+
+#AVNOA
+q16Model <- aov(q16$Price ~ q16$Store + q16$Title)
+q16Resids <- residuals(q16Model)
+
+#Pre-requisite
+shapiro.test(q16Resids)
+leveneTest(q16$Price ~ q16$Store)
+
+#ANOVA output
+summary(q16Model)
+```
+
+```{r}
+#Q17
+distribution <- c(
+        pnorm(-1.5),
+        pnorm(-0.5) - pnorm(-1.5),
+        pnorm(0.5) - pnorm(-0.5),
+        pnorm(1.5) - pnorm(0.5),
+        pnorm(1.5, lower.tail = FALSE)
+)
+
+freq <- c(10, 18, 48, 16, 8)
+
+chisq.test(x = freq, p = distribution)
+```
+

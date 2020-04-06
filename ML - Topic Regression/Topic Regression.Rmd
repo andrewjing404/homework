@@ -1,0 +1,72 @@
+```{r}
+library(textir)
+library(maptpx)
+library(wordcloud)
+library(rddtools)
+library(glmnet)
+```
+
+
+```{r}
+## Problem Set 2.4
+# delete independents observations
+congress109Counts_slam <- as.simple_triplet_matrix(congress109Counts)
+topic_list <- topics(congress109Counts_slam[which(congress109Ideology$party != 'I'), ], K = seq(2, 30), verb = 5)
+party <- factor(congress109Ideology[which(congress109Ideology$party != 'I'), "party"])
+
+# binomial regression
+tpcreg <- glmnet(topic_list$omega, party, family = "binomial")
+# number of stars up or down for moving up 10% weight in that topic
+drop(coef(tpcreg))*0.1
+regtopics.cv <- cv.glmnet(topic_list$omega, party, family = "binomial")
+
+## give it the word %s as inputs
+x <- 100 * congress109Counts / rowSums(congress109Counts)
+x <- x[which(congress109Ideology$party != 'I'), ]
+regwords.cv <- cv.glmnet(x, party, family = "binomial")
+
+par(mfrow=c(1,2))
+plot(regtopics.cv)
+mtext("topic regression", font=2, line=2)
+plot(regwords.cv)
+mtext("bigram regression", font=2, line=2)
+```
+
+
+```{r}
+# max OOS R^2s
+max(1-regtopics.cv$cvm/regtopics.cv$cvm[1])
+max(1-regwords.cv$cvm/regwords.cv$cvm[1])
+```
+
+```{r}
+# topic model and phrase percentage regression on repshare
+
+# use original complete data
+topic_list <- topics(congress109Counts_slam, K = seq(2, 30), verb = 5)
+repshare <- congress109Ideology[,"repshare"]
+
+# linear regression
+tpcreg <- gamlr(topic_list$omega, repshare)
+# number of stars up or down for moving up 10% weight in that topic
+drop(coef(tpcreg))*0.1
+regtopics.cv <- cv.glmnet(topic_list$omega, repshare)
+
+## give it the word %s as inputs
+x <- 100 * congress109Counts / rowSums(congress109Counts)
+regwords.cv <- cv.glmnet(x, repshare)
+
+par(mfrow=c(1,2))
+plot(regtopics.cv)
+mtext("topic regression", font=2, line=2)
+plot(regwords.cv)
+mtext("bigram regression", font=2, line=2)
+```
+
+
+```{r}
+# max OOS R^2s
+max(1-regtopics.cv$cvm/regtopics.cv$cvm[1])
+max(1-regwords.cv$cvm/regwords.cv$cvm[1])
+```
+

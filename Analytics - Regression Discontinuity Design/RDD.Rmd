@@ -1,0 +1,35 @@
+```{r}
+library(textir)
+library(maptpx)
+library(wordcloud)
+library(rddtools)
+library(glmnet)
+```
+
+
+
+```{r}
+## Problem Set 1.1
+class <- read.csv("class.csv")
+
+# Scatter Plot
+plot(class$class_size, class$mean_test_score) + abline(v = 30)
+
+# correlation coefficient
+cor(class$class_size, class$mean_test_score)
+```
+
+
+
+```{r}
+## Problem Set 1.3
+classsize <- class$class_size
+u_test_score <- class$mean_test_score
+data <- rdd_data(u_test_score, classsize, cutpoint = 30)
+rdd_mod <- rdd_reg_lm(rdd_object = data, 
+                      slope = "same")
+
+# Summarize the regression. D is the variable we are interested in.
+summary(rdd_mod)
+```
+
