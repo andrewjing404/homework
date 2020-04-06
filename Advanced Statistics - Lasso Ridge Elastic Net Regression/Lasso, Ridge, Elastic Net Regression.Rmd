@@ -1,0 +1,134 @@
+```{r}
+library(glmnet)
+data=read.csv("Cars_Data.csv", header=T)
+
+y=data[,17]
+x=as.matrix(data[,2:16])
+```
+
+```{r}
+######### Lasso Regression
+set.seed(2)
+out.lasso = glmnet(x, y, alpha = 1)  # fits lasso because alpha = 1 vanishes the quadratic penalty
+
+# Coeffcients plots
+
+plot(out.lasso, xvar="lambda", label=TRUE)  # plots estimates vs log(lambda) values
+
+title("Lasso Coefficients Plot",line=2.5)
+      
+cvlasso = cv.glmnet(x, y, type.measure="mse", alpha = 1, nfolds = 3)  # 3 fold cross-validation
+plot(cvlasso, main = "Select Best Lambda")  # plot of MSE vs Lambda
+mse_lasso <- cvlasso$cvm[which(cvlasso$lambda == cvlasso$lambda.min)]
+lasso <- glmnet(x, y, alpha = 1, lambda = cvlasso$lambda.min)
+coef(lasso)
+
+sprintf ('The optimal lambda for lasso regression is %s', round(cvlasso$lambda.min, 3))
+sprintf ('MSE for lasso regression is %s', round(mse_lasso, 3))
+
+```
+
+```{r}
+######### Ridge Regression
+set.seed(3)
+out.ridge = glmnet(x, y, alpha = 0)  # fits lasso because alpha = 1 vanishes the quadratic penalty
+
+# Coeffcients plots
+
+plot(out.ridge, xvar="lambda", label=TRUE)  # plots estimates vs log(lambda) values
+
+title("Ridge Coefficients Plot",line=2.5)
+
+cvridge=cv.glmnet(x, y, type.measure="mse", alpha = 0, nfolds = 3)  # 3-fold cross-validation
+plot(cvridge, main = "Select Best Lambda")  # plot of MSE vs Lambda
+mse_ridge <- cvridge$cvm[which(cvridge$lambda == cvridge$lambda.min)]
+ridge <- glmnet(x, y, alpha = 0, lambda =  cvridge$lambda.min)
+coef(ridge)
+
+sprintf ('The optimal lambda for ridge regression is %s', round(cvridge$lambda.min, 3))
+sprintf ('MSE for ridge regression is %s', round(mse_ridge, 3))
+
+
+```
+
+```{r}
+######### Elastic Net Regression
+x <- as.matrix(x)
+alphas <- seq(from = 0.1, to = 0.9, by = 0.1)
+mse <- matrix(nrow = 9, ncol = 1, dimnames = list(alphas, 'Minimum MSE'))
+set.seed(1120)
+for (alpha in alphas){
+  out.en = glmnet(x, y, alpha = alpha)     
+  cven = cv.glmnet(x, y, type.measure="mse", alpha = alpha, nfolds = 3)  # 3-fold cross-validation
+  #plot(cven, main = "Select Best Lambda")  # plot of MSE vs Lambda
+  mse_en_est <- cven$cvm[which(cven$lambda == cven$lambda.min)]
+  en_est = coef(out.en, s = cven$lambda.min)  # best parameter estimates via Ridge
+  mse[rownames(mse) == alpha,] <- mse_en_est
+}
+print(mse)
+
+alpha_min <- alphas[which(mse == min(mse))] # the alpha that minimizes the MSE
+out.en = glmnet(x, y, alpha = alpha_min)
+plot(out.en, xvar="lambda", label=TRUE)
+
+cven = cv.glmnet(x, y, type.measure="mse", alpha = alpha_min, nfolds = 3)   
+plot(cven, main = "Select Best Lambda")			
+
+en <- glmnet(x, y, alpha = 0.3, lambda = cven$lambda.min)
+coef(en)
+
+sum(matrix(coef(en))== 0)
+
+
+sprintf ('The optimal alpha for EN regression is %s', round(alpha_min, 3))
+sprintf ('The optimal lambda for EN regression is %s', round(cven$lambda.min, 3))
+sprintf ('MSE for EN regression is %s', round(mse[which(mse == min(mse))], 3))
+
+
+```
+
+```{r}
+alphas <- seq(from = 0.1, to = 0.9, by = 0.1)
+mse <- matrix(nrow = 9, ncol = 1, dimnames = list(alphas, 'Minimum MSE'))
+set.seed(1)
+for (alpha in alphas){
+  out.en = glmnet(x, y, alpha = alpha)     
+  cven = cv.glmnet(x, y, type.measure="mse", alpha = alpha, nfolds = 3)  # 3-fold cross-validation
+  #plot(cven, main = "Select Best Lambda")  # plot of MSE vs Lambda
+  mse_en_est <- cven$cvm[which(cven$lambda == cven$lambda.min)]
+  en_est = coef(out.en, s = cven$lambda.min)  # best parameter estimates via Ridge
+  mse[rownames(mse) == alpha,] <- mse_en_est
+}
+print(mse)
+
+alpha_min <- alphas[which(mse == min(mse))] # the alpha that minimizes the MSE
+out.en = glmnet(x, y, alpha = alpha_min)
+plot(out.en, xvar="lambda", label=TRUE)
+
+cven = cv.glmnet(x, y, type.measure="mse", alpha = alpha_min, nfolds = 3)   
+plot(cven, main = "Select Best Lambda")			
+
+en <- glmnet(x, y, alpha = alpha_min, lambda = cven$lambda.min)
+coef(en)
+
+sprintf ('The optimal alpha for EN regression is %s', round(alpha_min, 3))
+sprintf ('The optimal lambda for EN regression is %s', round(cven$lambda.min, 3))
+sprintf ('MSE for EN regression is %s', round(mse[which(mse == min(mse))], 3))
+
+```
+
+
+```{r}
+x <- data.frame(x)
+ols_lasso <- lm(y ~ x$Attractive + x$Quiet + x$Interesting + x$Uncomfortable + x$Common + x$Successful)
+coef(ols_lasso)
+
+x <- as.matrix(x)
+ols_ridge <- lm(y ~ x)
+coef(ols_ridge)
+
+x <- data.frame(x)
+ols_en <- lm(y ~ x$Quiet + x$Interesting + x$Uncomfortable + x$Common + x$Economical + x$Successful)
+coef(ols_en)
+```
+
