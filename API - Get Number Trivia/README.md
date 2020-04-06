@@ -1,12 +1,10 @@
-# Positioning Map
+# Get Trivia of Numbers
 
-## Programmed in R
-### Required packages
-ggplot2, ggrepel, readr (optional for open files faster)
+## Programmed in Python
 
 ### Description
-Draw a positioning map of brands/products. The brands/products can have multiple attributes. The program will perform principle component reduction on attributions and by default, pick the two most important Eigen vectors and draw the positioning map.
+Get trivia of numbers from numbersapi.com and print them in a nice format.
 
-### Sample of Output
+### Output Sample
 
-![](https://github.com/andrewjing404/homework/blob/master/Advanced%20Statistics%20-%20Positioning%20Map/Result%20-%20Positioning%20Map.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/API%20-%20Get%20Number%20Trivia/Trivia.png?raw=true)
