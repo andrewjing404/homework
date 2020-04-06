@@ -1,12 +1,12 @@
-# Positioning Map
+# K-Means
 
 ## Programmed in R
-### Required packages
-ggplot2, ggrepel, readr (optional for open files faster)
+
 
 ### Description
-Draw a positioning map of brands/products. The brands/products can have multiple attributes. The program will perform principle component reduction on attributions and by default, pick the two most important Eigen vectors and draw the positioning map.
+Perform K-means analysis. Will exploit the optimal K value by drawing graphs of deviance vs K.
 
 ### Sample of Output
 
-![](https://github.com/andrewjing404/homework/blob/master/Advanced%20Statistics%20-%20Positioning%20Map/Result%20-%20Positioning%20Map.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/ML%20-%20K-Means/kmeans_1.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/ML%20-%20K-Means/kmeans_2.png?raw=true)
