@@ -1,0 +1,68 @@
+```{r}
+library(textir)
+library(maptpx)
+library(wordcloud)
+library(rddtools)
+library(glmnet)
+```
+
+
+```{r}
+## Problem Set 2.1
+load("congress.RData")
+
+set.seed(233)
+k_pool <- c(5, 10, 15, 20, 25)
+congress109Counts_scaled <- scale(as.matrix( congress109Counts/rowSums(congress109Counts) ))
+
+result <- lapply(X=k_pool, FUN=kmeans, x=congress109Counts_scaled, nstart = 5)
+for(i in 1:length(k_pool)){
+    cat("k =", k_pool[i], ", sizes are:", result[[i]]$size, "\n")
+}
+
+#potential issue: heavily correlated topics
+#cor(congress109Counts)[cor(congress109Counts) < 1 & cor(congress109Counts) > 0.8]
+```
+
+```{r}
+## Problem Set 2.2
+# Use BIC to choose the optimal K
+kmeansBIC <- function(fit){
+    m = ncol(fit$centers)
+    n = length(fit$cluster)
+    k = nrow(fit$centers)
+    D = fit$tot.withinss
+    return(D + log(n)*m*k)
+}
+
+# try a list of cancidate K values
+k_pool2 <- seq(3, 60)
+result_2 <- lapply(X=k_pool2, FUN=kmeans, x=congress109Counts_scaled, nstart = 5, iter.max = 20)
+
+# summarize the result, and find the optimal solution
+k_list <- c()
+BIC_list <- c()
+deviance_list <- c()
+for(i in 1:length(k_pool2)){
+    k <- k_pool2[i]
+    k_list <- c(k_list, k)
+    BIC <- kmeansBIC(result_2[[i]])
+    BIC_list <- c(BIC_list, BIC)
+    deviance <- result_2[[i]]$tot.withinss
+    deviance_list <- c(deviance_list, deviance)
+    cat("k =", k, "BIC =", BIC, "\n")
+    if(i == length(k_pool2)){
+        cat("\nMinimum BIC is:", min(BIC_list))
+        cat("Optimal k is:", k_list[BIC_list == min(BIC_list)], "\n")
+        result_optimized <- kmeans(congress109Counts_scaled, nstart = 5, iter.max = 20, centers = k_list[BIC_list == min(BIC_list)])
+        print(tapply(congress109Ideology$party, result_optimized$cluster, table))
+    }
+}
+
+#top 10 keywords in each cluster of the optimal kmeans model
+print(apply(result_optimized$centers,1,function(c) colnames(congress109Counts_scaled)[order(-c)[1:10]]))
+
+# Use elbow curve method to choose the optimal K
+plot(x = k_list, y = deviance_list)
+print("The elbow indicates about k = 6")
+```
