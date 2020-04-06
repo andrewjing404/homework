@@ -1,4 +1,4 @@
-# Positioning Map
+# Classic Statistics
 
 ## Programmed in R
 
