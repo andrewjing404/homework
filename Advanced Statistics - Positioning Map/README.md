@@ -1,7 +1,8 @@
 # Positioning Map
 
 **Programmed in R**
-**Required packages: ggplot2, ggrepel, readr (optional for open files faster)**
+
+Required packages: ggplot2, ggrepel, readr (optional for open files faster)
 
 
 Draw a positioning map of brands/products. The brands/products can have multiple attributes. The program will perform principle component reduction on attributions and by default, pick the two most important Eigen vectors and draw the positioning map.
