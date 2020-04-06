@@ -1,9 +1,15 @@
-# homework
-A place to store my homeworks, including courses:
-<ul>
-<li>Machine Learning</li>
-<li>Data Design and Representation (Web Scraping)</li>
-<li>Database Design</li>
-<li>Advanced Statistics</li>
-<li>Data Visualization</li>
-</ul>
+# Homework
+## Highlight
+- DB, Programming, Web Scraping - Scrape eBay
+- Tableau - Space Launch
+## Mainly Used Tech:
+1. Python
+2. R
+3. Jupyter
+4. MySQL
+5. MongoDB
+6. Tableau
+7. Machine Learning
+
+## Description
+A place to store my previous works and code templates.
