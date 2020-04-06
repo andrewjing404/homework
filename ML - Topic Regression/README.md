@@ -1,12 +1,12 @@
-# Positioning Map
+# Topic Regression
 
 ## Programmed in R
-### Required packages
-ggplot2, ggrepel, readr (optional for open files faster)
 
 ### Description
-Draw a positioning map of brands/products. The brands/products can have multiple attributes. The program will perform principle component reduction on attributions and by default, pick the two most important Eigen vectors and draw the positioning map.
+Perform topic regression on a sparse matrix. Draw plots and help determining the optimal number of topics.
 
 ### Sample of Output
 
-![](https://github.com/andrewjing404/homework/blob/master/Advanced%20Statistics%20-%20Positioning%20Map/Result%20-%20Positioning%20Map.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/ML%20-%20Topic%20Regression/Topic_1.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/ML%20-%20Topic%20Regression/Topic_2.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/ML%20-%20Topic%20Regression/Topic_3.png?raw=true)
