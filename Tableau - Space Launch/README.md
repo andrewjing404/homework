@@ -1,12 +1,11 @@
-# Positioning Map
+# Visualization of Space Launch
 
-## Programmed in R
-### Required packages
-ggplot2, ggrepel, readr (optional for open files faster)
+## Done in Tableau, kepler.gl, Flourish, R, Python, Photoshop, and Procreate
+
 
 ### Description
-Draw a positioning map of brands/products. The brands/products can have multiple attributes. The program will perform principle component reduction on attributions and by default, pick the two most important Eigen vectors and draw the positioning map.
+Gathered data/information from multiple sourse. Cleaned and processed the data into desired form and visualized them into a dashboard.
 
 ### Sample of Output
 
-![](https://github.com/andrewjing404/homework/blob/master/Advanced%20Statistics%20-%20Positioning%20Map/Result%20-%20Positioning%20Map.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/Tableau%20-%20Space%20Launch/Visualization.jpg?raw=true)
