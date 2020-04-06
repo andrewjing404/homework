@@ -1,12 +1,20 @@
 # Positioning Map
 
 ## Programmed in R
-### Required packages
-ggplot2, ggrepel, readr (optional for open files faster)
+
 
 ### Description
-Draw a positioning map of brands/products. The brands/products can have multiple attributes. The program will perform principle component reduction on attributions and by default, pick the two most important Eigen vectors and draw the positioning map.
+Perform a series of "classic" statistical analysis, including:
+1. Linear/multi/logistic regression;
+2. Regression diagnostics (homoscedasticity, normality);
+3. ANOVA;
+4. Parametric tests;
+5. Non-parametric tests;
+6. Histogram, residual plot.
+
 
 ### Sample of Output
 
-![](https://github.com/andrewjing404/homework/blob/master/Advanced%20Statistics%20-%20Positioning%20Map/Result%20-%20Positioning%20Map.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/Analytics%20-%20Classic%20Stats/Stat_1.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/Analytics%20-%20Classic%20Stats/Stat_2.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/Analytics%20-%20Classic%20Stats/Stat_3.png?raw=true)
