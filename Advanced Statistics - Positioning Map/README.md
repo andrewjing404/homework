@@ -1,10 +1,12 @@
-# homework
-A place to store my homeworks, including courses:
-<ul>
-<li>Machine Learning</li>
+# Positioning Map
+
+## Programmed in R
+### Required packages
+ggplot2, ggrepel, readr (optional for open files faster)
+
+### Description
+Draw a positioning map of brands/products. The brands/products can have multiple attributes. The program will perform principle component reduction on attributions and by default, pick the two most important Eigen vectors and draw the positioning map.
+
+### Sample of Output
+
 ![](https://github.com/andrewjing404/homework/blob/master/Advanced%20Statistics%20-%20Positioning%20Map/Result%20-%20Positioning%20Map.png?raw=true)
-<li>Data Design and Representation (Web Scraping)</li>
-<li>Database Design</li>
-<li>Advanced Statistics</li>
-<li>Data Visualization</li>
-</ul>
