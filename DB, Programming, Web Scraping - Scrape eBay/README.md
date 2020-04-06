@@ -1,12 +1,22 @@
-# Positioning Map
+# Scrape Listings on eBay
 
-## Programmed in R
-### Required packages
-ggplot2, ggrepel, readr (optional for open files faster)
+## Programmed in Python
 
 ### Description
-Draw a positioning map of brands/products. The brands/products can have multiple attributes. The program will perform principle component reduction on attributions and by default, pick the two most important Eigen vectors and draw the positioning map.
+Take search keywords and scrape listings on eBay.
+Can handle multiple types of listing, including retail, auction, promotion, etc.
+Will scrape the following information:
+1. Seller name;
+2. Seller score;
+3. Sponsored or not;
+4. Price and currency;
+5. Return policy;
+6. Shipping policy;
+7. Price;
+8. Number of item sold.
+Then write the information into MySQL, and print to terminal if needed.
+
 
 ### Sample of Output
 
-![](https://github.com/andrewjing404/homework/blob/master/Advanced%20Statistics%20-%20Positioning%20Map/Result%20-%20Positioning%20Map.png?raw=true)
+![](https://github.com/andrewjing404/homework/blob/master/DB,%20Programming,%20Web%20Scraping%20-%20Scrape%20eBay/Scrape%20eBay.png?raw=true)
